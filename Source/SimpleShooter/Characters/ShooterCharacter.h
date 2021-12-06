@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SimpleShooter/Actors/Gun.h"
 #include "ShooterCharacter.generated.h"
 
 UCLASS()
@@ -25,8 +26,14 @@ private:
 	void MoveRight(float AxisValue);
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
-	
+	void Shoot();
 private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float RotationRate = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGun> Gun_BP;
+
+	UPROPERTY()
+	AGun* Gun;
 };
