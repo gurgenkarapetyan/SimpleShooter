@@ -66,7 +66,6 @@ void AGun::PullTrigger()
 		return;
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("HELLO WORLD"));
 	FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
 	HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
 }
