@@ -17,6 +17,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -29,9 +30,15 @@ private:
 	void Shoot();
 	
 private:
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere)
 	float RotationRate = 100.0f;
 
+	UPROPERTY(EditDefaultsOnly)
+	float MaxHealth = 100;
+ 	
+ 	UPROPERTY(VisibleAnywhere)
+	float Health;
+ 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGun> Gun_BP;
 

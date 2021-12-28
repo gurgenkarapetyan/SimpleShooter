@@ -35,10 +35,16 @@ void AGun::PullTrigger()
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (OwnerPawn == nullptr) return;
+	if (OwnerPawn == nullptr)
+	{
+		return;
+	}
 
 	AController* OwnerController = OwnerPawn->GetController();
-	if (OwnerController == nullptr) return;
+	if (OwnerController == nullptr)
+	{
+		return;
+	}
 
 	FVector Location;
 	FRotator Rotation;
@@ -46,10 +52,21 @@ void AGun::PullTrigger()
 	
 	FVector End = Location + Rotation.Vector() * MaxRange;
 	FHitResult Hit;
-	if (GetWorld()->LineTraceSingleByChannel(Hit, Location, End, ECollisionChannel::ECC_GameTraceChannel1))
+	if (!UKismetSystemLibrary::LineTraceSingle(GetWorld(), Location, End, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), true,
+										{this, GetOwner()}, EDrawDebugTrace::ForDuration, Hit, true))
 	{
-		FVector ShotDirection = -Rotation.Vector();
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+		return;
 	}
+	
+	FVector ShotDirection = -Rotation.Vector();
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
+	AActor* HitActor = Hit.GetActor();
+	if (!HitActor)
+	{
+		return;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("HELLO WORLD"));
+	FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
+	HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
 }
-
